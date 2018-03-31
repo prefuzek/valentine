@@ -122,7 +122,36 @@ If the structure does not match the pattern, `with` returns nil:
 ; ==> {:a [1 2 3], :b "foo", :c 15}
 ```
 
+## Cheatsheet
 
+##### conforms?
+```
+(conforms? structure matcher)
+"Returns true if structure is matched by matcher, false otherwise."
+```
+##### matches
+```
+(matches structure matcher)
+"Returns a list of all elements in structure that are matched by matcher."
+```
+##### with
+```
+(with structure matcher & body)
+"If structure is matched by matcher, executes body with bindings provided by calls to
+`as` in matcher. Otherwise returns nil."
+```
+##### replace-with
+```
+(replace-with structure matcher replacement)
+"Recursively replaces any elements in structure that are matched by matcher with
+replacement. Replacement may reference bindings provided by calls to `as` in matcher."
+```
+##### update-with
+```
+(update-with structure matcher f)
+"Returns structure, updated by applying f to any elements that are matched by matcher.
+f may reference bindings provided by calls to `as` in matcher."
+```
 
 ## License
 
