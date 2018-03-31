@@ -17,8 +17,7 @@
 
 (defn binding? [x] (= (type x) valentine.core.Binding))
 
-;; utils
-;; -----
+;; --------------------------------------------------------------
 
 (defn multi-reduce
   "Reduces over multiple collections. f is a function of n+1 variables
@@ -42,18 +41,16 @@
    (and (coll-type obj)
         (= (count obj) (count matcher))
         (multi-reduce #(merge-bindings %1 (conforms*? %2 %3))
-                        #_#(and %1 (conforms*? %2 %3))
-                        {:conforms true :bindings []}
-                        obj matcher))))
+                      (Binding. true [])
+                      obj matcher))))
 
 (defn coll-of-fn [matcher]
   (fn [obj] (reduce #(merge-bindings %1 (conforms*? %2 matcher))
-                    #_#(and %1 (conforms*? %2 matcher))
                     (Binding. true [])
                     obj)))
 
-;;   conforms? multimethod
-;;   ---------------------
+;; --------------------------------------------------------------
+
 
 (defn conforms? [obj matcher]
   (boolean (:conforms (conforms*? obj matcher))))
@@ -102,6 +99,8 @@
   (if @debug (println "map"))
   (matches-coll obj matcher map?))
 
+;; TODO: FIX WITH BINDINGS
+
 (defmethod conforms*? :set [obj matcher]
   (if @debug (println "set"))
   (and (set? obj)
@@ -113,9 +112,7 @@
   (if @debug (println "default"))
   (Binding. (= obj matcher) []))
 
-
-;; Matcher record functions
-;; ------------------------
+;; --------------------------------------------------------------
 
 (defn literal [obj]
   (Matcher.  #(if (= % obj) (Binding. true [])
@@ -155,9 +152,7 @@
                          (Binding. true {~(str binding) obj#})
                          (Binding. false [])))))
 
-;; Matches fn
-;; ----------
-
+;; ---------------------------------------------------------------
 
 (defn matches [obj matcher]
   (if (coll? obj)
@@ -165,18 +160,18 @@
           (when (conforms? obj matcher) (list obj)))
     (when (conforms? obj matcher) (list obj))))
 
-
-;; Bindings fns
-;; ------------
+;; --------------------------------------------------------------
 
 (defmacro with [obj matcher & forms]
-  (let [conforms (conforms*? obj (eval matcher))]
+  (let [conforms (conforms*? (eval obj) (eval matcher))]
     (when (:conforms conforms)
       (let [bindings (:bindings conforms)
             key-bindings (map symbol (keys bindings))
             val-bindings (vals bindings)
             binding-form (vec (interleave key-bindings val-bindings))]
         `(let ~binding-form ~@forms)))))
+
+;; TODO: check nested matchings
 
 (defmacro update-with [obj matcher f]
   (postwalk #(let [conforms (conforms*? % (eval matcher))]
