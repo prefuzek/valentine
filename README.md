@@ -132,7 +132,7 @@ In both `replace-with` and `update-with`, the updating of the structure takes pl
 (replace-with [1 [2 [3 [4 [5 [6 7]]]]]] [(as pos? n) (as (vec-of pos?) v)] (conj v n))
 ; ==> [6 7 5 4 3 2 1]
 
-(update-with [1 [2 [3 [4 [5 [6 7]]]]]] [pos? (vec-of some?)] #(into [(first %)] (second %)))
+(update-with [1 [2 [3 [4 [5 [6 7]]]]]] [pos? (vec-of pos?)] #(into [(first %)] (second %)))
 ; ==> [1 2 3 4 5 6 7]
 ```
 
