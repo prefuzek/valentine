@@ -171,10 +171,8 @@
             binding-form (vec (interleave key-bindings val-bindings))]
         `(let ~binding-form ~@forms)))))
 
-;; TODO: check nested matchings
-
 (defmacro update-with [obj matcher f]
-  (postwalk #(let [conforms (conforms*? % (eval matcher))]
+  (postwalk #(let [conforms (conforms*? (eval %) (eval matcher))]
                (if (:conforms conforms)
                  (let [bindings (:bindings conforms)
                        key-bindings (map symbol (keys bindings))
@@ -185,7 +183,7 @@
             obj))
 
 (defmacro replace-with [obj matcher new]
-  (postwalk #(let [conforms (conforms*? % (eval matcher))]
+  (postwalk #(let [conforms (conforms*? (eval %) (eval matcher))]
                (if (:conforms conforms)
                  (let [bindings (:bindings conforms)
                        key-bindings (map symbol (keys bindings))
