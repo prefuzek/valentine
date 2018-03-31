@@ -126,6 +126,16 @@ If the structure does not match the pattern, `with` returns nil:
 ; ==> {:a [1 2 3], :b "foo", :c 15}
 ```
 
+In both `replace-with` and `update-with`, the updating of the structure takes place depth-first. This means that matches can cascade:
+
+```
+(replace-with [1 [2 [3 [4 [5 [6 7]]]]]] [(as pos? n) (as (vec-of pos?) v)] (conj v n))
+; ==> [6 7 5 4 3 2 1]
+
+(update-with [1 [2 [3 [4 [5 [6 7]]]]]] [pos? (vec-of some?)] #(into [(first %)] (second %)))
+; ==> [1 2 3 4 5 6 7]
+```
+
 ## Cheatsheet
 
 ##### conforms?
@@ -158,8 +168,6 @@ f may reference bindings provided by calls to `as` in matcher."
 ```
 
 ## License
-
-Copyright © 2018 Zachary Kuepfer
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
