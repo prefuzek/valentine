@@ -59,11 +59,10 @@ Valentine also provides the following functions that are used in patterns:
  ```
 
  - `literal` always checks for direct equality, so it allows you to match for functions:
-
+```
  (conforms? [2 even?] [even? (literal even?)])
  ; ==> true
-
-####
+```
 
 The `matches` function returns all objects in a structure that are matched by a pattern:
 
@@ -82,7 +81,9 @@ The `matches` function returns all objects in a structure that are matched by a 
 The `with` function allows you to bind parts of your matched structure to names that you can then reference within the body of `with`. To bind a value, wrap its matcher and the bound name with `as`.
 
 ```
-(with {:first-name "Bob" :last-name "Ross"} {:first-name (as string? fname) :last-name (as string? lname)} (str fname " " lname))
+(with {:first-name "Bob" :last-name "Ross"}
+      {:first-name (as string? fname) :last-name (as string? lname)}
+      (str fname " " lname))
 ; ==> "Bob Ross"
 
 (with [even? 3] [(as fn? f) (as some? arg)] (println "Function:" f) (println "Argument:" arg) (f arg))
@@ -108,8 +109,8 @@ If the structure does not match the pattern, `with` returns nil:
 (replace-with {:a "foo" :b {:c "bar" :d "baz"}} (as string? s) (clojure.string/capitalize s))
 ; ==> {:a "Foo", :b {:c "Bar", :d "Baz"}}
 
-(replace-with [:+ [:/ [:* 3 8] 3] [:- 14 [:/ 6 3]]] [:/ (as some? num) (as some? denom)] [:/ denom num])
-; ==> [:+ [:/ 3 [:* 3 8]] [:- 14 [:/ 3 6]]]
+(replace-with ["+" ["/" ["*" 3 8] 3] ["-" 14 ["/" 6 3]]] ["/" (as some? num) (as some? denom)] ["/" denom num])
+; ==> ["+" ["/" 3 ["*" 3 8]] ["-" 14 ["/" 3 6]]]
 ```
 
 #### update-with
