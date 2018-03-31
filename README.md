@@ -28,9 +28,9 @@ The heart of Valentine is the `conforms?` function. It takes a Clojure structure
 ; ==> true
 ```
 
-As you can see, primitives evaluate to themselves. Functions match if they return a truthy value. Collections only match collections of the same type.
+As you can see, primitives match themselves. Functions match if they return a truthy value. Collections only match collections of the same type.
 
-Valentine also provides the following functions that are used in patterns:
+Valentine also provides the following functions to be used in patterns:
 
  - `coll` matches any type of collection:
  ```
@@ -58,20 +58,20 @@ Valentine also provides the following functions that are used in patterns:
  ; ==> true
  ```
 
- - `literal` always checks for direct equality, so it allows you to match for functions:
+ - `literal` always checks for direct equality, so it allows you to match functions:
 ```
  (conforms? [2 even?] [even? (literal even?)])
  ; ==> true
 ```
 
-The `matches` function returns all objects in a structure that are matched by a pattern:
+The `matches` function returns a list of all objects in a structure that are matched by a pattern:
 
 ```
 (matches [1 [2 3 4] [[5 6] [7 8] 9]] even?)
 ; ==> (2 4 6 8)
 
 (matches [1 [2 3 4] [[5 6] [7 8] 9]] [integer? some? some?])
-; ==> ([2 3 4] [1 [2 3 4] [[5 6] [7 8] 9]])
+; ==> ([1 [2 3 4] [[5 6] [7 8] 9]] [2 3 4])
 ```
 
 ### Binding and Structure manipulation
@@ -86,7 +86,10 @@ The `with` function allows you to bind parts of your matched structure to names 
       (str fname " " lname))
 ; ==> "Bob Ross"
 
-(with [even? 3] [(as fn? f) (as some? arg)] (println "Function:" f) (println "Argument:" arg) (f arg))
+(with [even? 3] [(as fn? f) (as some? arg)]
+      (println "Function:" f)
+      (println "Argument:" arg)
+      (f arg))
 ; ==> Function: #function[clojure.core/even?]
 ; ==> Argument: 3
 ; ==> false
@@ -94,7 +97,8 @@ The `with` function allows you to bind parts of your matched structure to names 
 
 If the structure does not match the pattern, `with` returns nil:
 ```
-(with [1 2 false] [(as odd? odd) (as even? even) true?] (+ even odd))
+(with [1 2 false] [(as odd? odd) (as even? even) true?]
+      (+ even odd))
 ; ==> nil
 ```
 
