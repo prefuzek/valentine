@@ -64,6 +64,8 @@ Valentine also provides the following functions to be used in patterns:
  ; ==> true
 ```
 
+#### matches
+
 The `matches` function returns a list of all objects in a structure that are matched by a pattern:
 
 ```
